@@ -1645,6 +1645,19 @@ add a dependency which prevents notifications for all other failing services:
       ignore where service.name == "child-health"
    }
 
+### <a id="distributed-monitoring-windows-firewall"></a> Windows Firewall
+
+By default ICMP requests are disabled in the Windows firewall. You can
+change that by [adding a new rule](https://support.microsoft.com/en-us/kb/947709).
+
+    C:\WINDOWS\system32>netsh advfirewall firewall add rule name="ICMP Allow incoming V4 echo request" protocol=icmpv4:8,any dir=in action=allow
+
+If your master/satellite nodes should actively connect to the Windows client
+you'll also need to ensure that port `5665` is enabled.
+
+    C:\WINDOWS\system32>netsh advfirewall firewall add rule name="Open port 5665 (Icinga 2)" dir=in action=allow protocol=TCP localport=5665
+
+
 ### <a id="distributed-monitoring-windows-plugins"></a> Windows Client and Plugins
 
 The Icinga 2 package on Windows already provides several plugins.
@@ -1729,6 +1742,7 @@ First, add the client node as host object:
       check_command = "hostalive"
       address = "192.168.56.111"
       vars.client_endpoint = name //follows the convention that host name == endpoint name
+      vars.os_type = "windows"
     }
 
 Next, add a performance counter check using command endpoint checks (details in the
@@ -1747,13 +1761,17 @@ Next, add a performance counter check using command endpoint checks (details in 
       //specify where the check is executed
       command_endpoint = host.vars.client_endpoint
 
-      assign where host.vars.client_endpoint
+      assign where host.vars.os_type == "windows" && host.vars.client_endpoint
     }
 
 Validate the configuration and restart Icinga 2.
 
     [root@icinga2-master1.localdomain /]# icinga2 daemon -C
     [root@icinga2-master1.localdomain /]# systemctl restart icinga2
+
+
+
+
 
 ## <a id="distributed-monitoring-advanced-hints"></a> Advanced Hints
 
@@ -1848,7 +1866,7 @@ to the client node `icinga2-client1.localdomain`:
     //...
 
     object Endpoint "icinga2-client1.localdomain" {
-      host = "192.168.33.111" //the master actively tries to connect to the client
+      host = "192.168.56.111" //the master actively tries to connect to the client
       log_duration = 0
     }
 
@@ -1893,7 +1911,7 @@ Configuration on the master node `icinga2-master1.localdomain`:
     //...
 
     object Endpoint "icinga2-client1.localdomain" {
-      host = "192.168.33.111" //the master actively tries to connect to the client
+      host = "192.168.56.111" //the master actively tries to connect to the client
       log_duration = 0
     }
 

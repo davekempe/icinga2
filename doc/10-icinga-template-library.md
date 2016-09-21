@@ -1607,7 +1607,8 @@ Custom attributes passed as [command parameters](3-monitoring-basics.md#command-
 Name            | Description
 ----------------|--------------
 nscp_log_level  | **Optional.** The log level. Defaults to "critical".
-nscp_load_all   | **Optional.** Whether to load all modules. Defaults to true.
+nscp_load_all   | **Optional.** Whether to load all modules. Defaults to false.
+nscp_modules    | **Optional.** An array of NSClient++ modules to load. Defaults to `[ "CheckSystem" ]`.
 nscp_boot       | **Optional.** Whether to use the --boot option. Defaults to true.
 nscp_query      | **Required.** The NSClient++ query. Try `nscp client -q x` for a list.
 nscp_arguments  | **Optional.** An array of query arguments.
