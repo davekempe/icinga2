@@ -265,8 +265,8 @@ master node.
 There is a security mechanism in place which requires the client to send in a valid
 ticket for CSR auto-signing.
 
-This ticket must be generated beforehand. The `ticket_salt` attribute for the [ApiListener](9-object-types.md#objecttype-apilistener)
-must be configured in order to make this work.
+This ticket must be generated beforehand on the master. The `ticket_salt` attribute for the [ApiListener](9-object-types.md#objecttype-apilistener)
+must be configured in order to make this work, in the master constants.conf.
 
 There are two possible ways to retrieve the ticket:
 
@@ -529,7 +529,7 @@ This happens automatically and is ensured by the cluster protocol.
 
 ### <a id="distributed-monitoring-top-down"></a> Top Down
 
-According to feedback that we've received from the community, this is the most commonly used mode.
+According to feedback that we've received from the community, this is the most commonly used mode. The main reason for this is it allows you to centralise the configuration of the entire cluster on the master, and have minimal configuration on the satellites and clients. The disadvantage of this mode is that the satellites of course rely on the master to either send them check commands, or configuration, and they are therefore not as independent as the bottom up mode. 
 
 There are two different behaviors with check execution:
 
@@ -1583,6 +1583,8 @@ Restart the client(s) which should receive the global zone before
 before restarting the parent master/satellite nodes.
 
 Then validate the configuration on the master node and restart Icinga 2.
+
+Multiple global zones are allowed, and as an example [Icinga Director](https://github.com/Icinga/icingaweb2-module-director) uses a seperate global zone, pushed via the API.
 
 **Tip**: You can copy the example configuration files located in `/etc/icinga2/conf.d`
 into your global zone.
