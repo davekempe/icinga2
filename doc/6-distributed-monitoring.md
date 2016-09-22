@@ -155,11 +155,13 @@ additional security:
 * SSL certificates are mandatory for communication between nodes. The CLI commands
 help you create those certs automatically.
 * Master CA signs certificates for all nodes in the cluster.
-* Node communication is authenticated and encrypted using this SSL certicate based on the libssl library from your plastform.
-* API communication can be authenticated using username, password and certificate, and encrypted using TLS 1.2.
+* Node communication is authenticated and encrypted using this SSL certificate based on the libssl library from the distribution used.
+* API communication can be authenticated using username, password and optional certificate, and encrypted using TLS 1.2.
 * Child zones only receive updates (check results, commands, etc.) for their configured objects, from their trusted parent.
 * Zones cannot interfere with other zones and influence each other. Each checkable host or service object is assigned to **one zone** only.
 * All nodes in a zone trust each other.
+* DNS and certificate common names need to match, similiar to standard HTTPS.
+
 * [Config sync](6-distributed-monitoring.md#distributed-monitoring-top-down-config-sync) and [remote command endpoint execution](6-distributed-monitoring.md#distributed-monitoring-top-down-command-endpoint) is disabled by default.
 
 The underlying protocol is using JSON-RPC events sent over TLS secured
